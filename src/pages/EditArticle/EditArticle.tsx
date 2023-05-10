@@ -1,10 +1,11 @@
 import classes from './EditArticle.module.scss';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { useAppDispatch } from '../../hooks/redux';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from '../../axios'
 import { fetchPutArticles } from '../../store/blogSlice';
+import { selectIsAuth } from '../../store/authSlice';
 
 const EditArticle = () => {
   const [titleInput, setTitleInput] = useState('');
@@ -15,7 +16,7 @@ const EditArticle = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   
-
+  const isAuth = useAppSelector(selectIsAuth)
 
   const { handleSubmit, control, register } = useForm({
     defaultValues: {
@@ -52,9 +53,19 @@ const EditArticle = () => {
       setShortInput(response?.data.article.description);
       setBodyInput(response?.data.article.body);
       setTagsInput(response?.data.article?.title);
+      
+      if (response?.data.article.author.username !== localStorage.getItem('username')) {
+        navigate('/')
+      }
     }
+
+
     fetchData();
   }, []);
+
+  if (!isAuth && !localStorage.getItem("token")) {
+    navigate('/sign-in')
+  }
 
   return (
     <div className={classes.article}>

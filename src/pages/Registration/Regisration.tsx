@@ -1,7 +1,7 @@
 import classes from './Registration.module.scss';
 import { useForm } from 'react-hook-form';
-import { useAppDispatch } from '../../hooks/redux';
-import { fetchRegister } from '../../store/authSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { fetchRegister, selectIsAuth } from '../../store/authSlice';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ const Registration = () => {
   const navigate = useNavigate();
   const [errorPassword, setErrorPassword] = useState('');
   const dispatch = useAppDispatch();
+  const isAuth = useAppSelector(selectIsAuth)
 
   const {
     register,
@@ -20,6 +21,7 @@ const Registration = () => {
       email: '',
       password: '',
       repeatPassword: '',
+      checkbox: '',
     },
     mode: 'onChange',
   });
@@ -30,9 +32,14 @@ const Registration = () => {
     } else {
       setErrorPassword('');
     }
+    
     dispatch(fetchRegister(data));
-    navigate('/');
+
   };
+
+  if(isAuth) {
+    navigate('/');
+  }
 
   return (
     <div className={classes.login}>
@@ -46,11 +53,13 @@ const Registration = () => {
             placeholder="Username"
             {...register('username', {
               required: 'Укажите имя',
+              pattern: /^[^@#$%^&*().]+$/i,
               maxLength: { value: 20, message: 'Имя слишком длинное' },
               minLength: { value: 3, message: 'Имя слишком короткое' },
             })}
           />
-          {errors.email && <div className={classes.error}>{errors.username?.message}</div>}
+          {errors.username && <div className={classes.error}>{errors.username?.message}</div>}
+          {errors.username?.type === 'pattern' && <span className={classes.error}>Недопустимый символ</span>}
         </label>
         <label>
           <p className={classes.login__name}>Email address</p>
@@ -82,13 +91,19 @@ const Registration = () => {
           {errorPassword && <div className={classes.error}>{errorPassword}</div>}
         </label>
         <label>
-          <input type="checkbox" className={classes.login__checkbox} />
+          <input 
+              type="checkbox" 
+              className={classes.login__checkbox} 
+              {...register('checkbox', {
+                required: 'Нажмите для согласия на обработку данных'
+              })}/>
           <p className={classes.login__text}>I agree to the processing of my personal information</p>
+          {errors.checkbox && <div className={classes.error_checkbox}>{errors.checkbox.message}</div>}
         </label>
         <button type="submit" className={classes.login__button}>Create</button>
       </form>
 
-      <p className={classes.login__signIn}>Already have an account? Sign in</p>
+      <p className={classes.login__signIn}>Already have an account? <span onClick={() => navigate('/sign-in')} className={classes.signin}>Sign in</span>.</p>
     </div>
   );
 };

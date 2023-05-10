@@ -90,6 +90,19 @@
     line-height: 22px;
 }
 
+.error_checkbox {
+    margin-left: 40px;
+    color: #F5222D;
+    font-size: 14px;
+    margin-top: -30px;
+    margin-bottom: 20px;
+}
+
 .login__input.errorInput {
     border: 1px solid red;
   }
+
+.signin {
+    color: #1890FF;
+    cursor: pointer;
+}

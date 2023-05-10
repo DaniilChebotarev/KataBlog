@@ -23,13 +23,20 @@ export const fetchUserData = createAsyncThunk(
 export const fetchRegister = createAsyncThunk(
   'auth/fetchUserData',
   async ({ username, email, password }: Fetch) => {
-    const { data } = await axios.post('/users', { user: { username, email, password } });
-    localStorage.setItem('token', data.user.token);
-    localStorage.setItem('data', JSON.stringify(data));
-    return data;
+    try {
+      const { data } = await axios.post('/users', { user: { username, email, password }});
+
+      localStorage.setItem('token', data.user.token);
+      localStorage.setItem('data', JSON.stringify(data));
+      return data;
+    } catch (error: any) {
+      if (error.response && error.response.status) {
+        alert('Не удалось авторизоваться');
+      }
+      throw error;
+    }
   }
 );
-
 export const fetchPutUser = createAsyncThunk(
   'put/fetchPutUser',
   async ({ username, email, password, image }: Fetch) => {
@@ -124,6 +131,6 @@ const authSlice = createSlice({
   },
 });
 
-export const {logout} = authSlice.actions;
+export const {logout, login} = authSlice.actions;
 export const selectIsAuth = (state: RootState) => Boolean(state.authReducer.data);
 export const authReducer = authSlice.reducer;

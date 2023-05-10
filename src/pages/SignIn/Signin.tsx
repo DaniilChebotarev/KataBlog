@@ -63,11 +63,11 @@ const Signin = () => {
         </label>
         {error && <div className={classes.error}>{error}</div>}
         <button type="submit" className={classes.signin__button}>
-             Create
+             Enter
         </button>
       </form>
 
-      <p className={classes.signin__signUp}>Don’t have an account? Sign Up.</p>
+      <p className={classes.signin__signUp}>Don’t have an account? <span className={classes.signup} onClick={() => navigate('/sign-up')}>Sign Up</span>.</p>
     </div>
   );
 };
