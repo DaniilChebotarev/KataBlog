@@ -1,21 +1,33 @@
 import { useForm } from 'react-hook-form';
 import classes from './Profile.module.scss';
 import { useAppDispatch } from '../../hooks/redux';
-//import { useNavigate } from 'react-router-dom';
 import { fetchPutUser } from '../../store/authSlice';
 import { Fetch } from '../../types/post';
+import { useEffect, useState } from 'react';
 
 
 
 
 const Profile = () => {
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+
     const dispatch = useAppDispatch()
-    //const navigate = useNavigate();
 
     const onSubmit = (data: Fetch) => {
-        
-        dispatch(fetchPutUser(data))
+        dispatch(fetchPutUser(data));
       };
+
+
+    useEffect(() => {
+      const data = localStorage.getItem('data');
+      const parse = JSON.parse(data as string);
+
+      setUsername(parse.user.username);
+      setEmail(parse.user.email);
+    }, [setUsername, setEmail])
+
+     
 
     const {
         register,
@@ -39,6 +51,7 @@ const Profile = () => {
             <p className={classes.login__name}>Username</p>
             <input
               type="text"
+              value={username}
               className={`${classes.login__input} ${errors.username ? classes.errorInput : ''}`}
               placeholder="Username"
               {...register('username', {
@@ -52,6 +65,8 @@ const Profile = () => {
           <label>
             <p className={classes.login__name}>Email address</p>
             <input
+                          value={email}
+
               type="email"
               className={`${classes.login__input} ${errors.email ? classes.errorInput : ''}`}
               placeholder="Email address"
