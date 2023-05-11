@@ -3,8 +3,8 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import axios from '../../axios'
-import { fetchPutArticles } from '../../store/blogSlice';
+import axios from '../../axios';
+import { IFetchArticles, fetchPutArticles } from '../../store/blogSlice';
 import { selectIsAuth } from '../../store/authSlice';
 
 const EditArticle = () => {
@@ -15,37 +15,45 @@ const EditArticle = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
-  const isAuth = useAppSelector(selectIsAuth)
 
-  const { handleSubmit, control, register } = useForm({
-    defaultValues: {
-      title: '',
-      description: '',
-      body: '',
-    },
+  const isAuth = useAppSelector(selectIsAuth);
+  
+  const defaultValues: IFetchArticles = {
+    title: '',
+    description: '',
+    body: '',
+    tagList: [],
+  };
+
+  const {
+    handleSubmit,
+    control,
+    register,
+    formState: { isValid },
+  } = useForm({
+    defaultValues,
     mode: 'onBlur',
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<any>({
     control,
-    name: 'tagList' as never,
+    name: 'tagList',
     rules: {
       required: 'Please append at least 1 item',
     },
   });
 
-  const onSubmit = (data: {title: string, description: string, body: string}) => {
-    dispatch(fetchPutArticles(data))
-    navigate('/')
+  const onSubmit = (data: { title: string; description: string; body: string }) => {
+    dispatch(fetchPutArticles(data));
+    navigate('/');
   };
 
   useEffect(() => {
     async function fetchData() {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
       const data = localStorage.getItem('data');
       const parse = JSON.parse(data as string);
-      const slug = localStorage.getItem("slug");
+      const slug = localStorage.getItem('slug');
       const response = await axios.get(`articles/${slug}`, {
         headers: {
           Authorization: `Token ${token}`,
@@ -55,20 +63,18 @@ const EditArticle = () => {
       setShortInput(response?.data.article.description);
       setBodyInput(response?.data.article.body);
       setTagsInput(response?.data.article?.title);
-      
+
       if (response?.data.article.author.username !== parse?.user.username) {
-        navigate('/')
+        navigate('/');
       }
 
       if (!isAuth && !token) {
-        navigate('/sign-in')
+        navigate('/sign-in');
       }
     }
 
     fetchData();
   }, []);
-
-
 
   return (
     <div className={classes.article}>
@@ -80,9 +86,8 @@ const EditArticle = () => {
             className={classes.article__input}
             value={titleInput}
             type="text"
-            
             {...register('title', {
-              onChange: (e) => setTitleInput(e.target.value)
+              onChange: (e) => setTitleInput(e.target.value),
             })}
           />
         </label>
@@ -93,7 +98,7 @@ const EditArticle = () => {
             type="text"
             value={shortInput}
             {...register('description', {
-              onChange: (e) => setShortInput(e.target.value)
+              onChange: (e) => setShortInput(e.target.value),
             })}
           />
         </label>
@@ -103,7 +108,7 @@ const EditArticle = () => {
             className={classes.article__bigInput}
             value={bodyInput}
             {...register('body', {
-              onChange: (e) => setBodyInput(e.target.value)
+              onChange: (e) => setBodyInput(e.target.value),
             })}
           />
         </label>
@@ -116,13 +121,13 @@ const EditArticle = () => {
                   className={classes.article__inputTag}
                   defaultValue=""
                   placeholder="Tag"
-                  value={tagsInput}
+                  {...register(`tagList.${index}.name`, { required: 'Укажите тег' })}
                 />
                 <button onClick={() => remove(index)} className={classes.article__delete}>
                   Delete
                 </button>
                 {index === fields.length - 1 && (
-                  <button onClick={() => append({ name: '' })} className={classes.article__add}>
+                  <button onClick={() => append({ name: '' })} className={classes.article__add} disabled={!isValid}>
                     Add tag
                   </button>
                 )}
