@@ -49,46 +49,63 @@
     }
 
     &__inputTag {
-        width: 300px;
-        height: 40px;
-        border: 1px solid #D9D9D9;
+        font-family: inherit;
+        background: rgb(255, 255, 255);
+        border: 1px solid rgb(217, 217, 217);
         border-radius: 4px;
-        padding-left: 10px;
+        color: rgba(0, 0, 0, 0.75);
+        font-style: normal;
+        font-weight: 400;
         font-size: 16px;
+        line-height: 24px;
+        width: 300px;
+        box-sizing: border-box;
+        padding: 8px 12px;
+        margin-top: 10px;
+        margin-right: 10px;
     }
 
     &__delete {
-        font-size: 16px;
-        font-weight: 600;
-        width: 150px;
-        color: #F5222D;
-        border-radius: 4px;
-        border: 2px solid #F5222D;
-        background: #FFFFFF;
-        padding: 10px;
-        margin-top: 10px;
-        margin-left: 10px;
+        text-decoration: none;
+        background: unset;
+        border: 1px solid rgb(245, 34, 45);
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 14px;
+        line-height: 22px;
+        padding: 6px 10px;
+        color: rgb(245, 34, 45);
     }
 
     &__add {
-        font-size: 16px;
-        font-weight: 600;
-        width: 150px;
-        color: #1890FF;
-        border-radius: 4px;
-        border: 2px solid #1890FF;
-        background: #FFFFFF;
-        padding: 10px;
+        text-decoration: none;
+        background: unset;
+        border: 1px solid rgb(24, 144, 255);
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 14px;
+        line-height: 22px;
+        padding: 6px 10px;
+        color: rgb(24, 144, 255);
         margin-left: 10px;
     }
 
     &__btn {
-        width: 319px;
-        height: 40px;
-        background: #1890FF;
+        display: block;
+        width: 320px;
+        box-sizing: border-box;
+        background: rgb(24, 144, 255);
         border-radius: 4px;
-        color: white;
-        margin-top: 20px;
+        margin-bottom: 30px;
+        padding: 8px 12px;
+        border: 1px solid rgb(24, 144, 255);
+        color: rgb(255, 255, 255);
+        cursor: pointer;
+        margin-top: 30px;
+        &:disabled {
+          background: rgba(24, 144, 255, 0.5);
+          border-color: rgba(24, 144, 255, 0.5);
+        }
     }
 }
 

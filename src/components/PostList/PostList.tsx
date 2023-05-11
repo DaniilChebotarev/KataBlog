@@ -1,8 +1,8 @@
 import PostItem from '../PostItem/PostItem';
 import { Pagination } from 'antd';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { fetchPosts, changePage } from '../../store/blogSlice';
+import { fetchPosts, changePage, setArticles } from '../../store/blogSlice';
 import axios from '../../axios';
 import { nanoid } from 'nanoid';
 
@@ -12,15 +12,16 @@ const PostList = () => {
   const dispatch = useAppDispatch();
   const { articles, page } = useAppSelector((state) => state.blogReducer);
 
-  const fetchArticleData = useCallback(async () => {
-    const res = await axios.get(`articles?limit=5&offset=5`);
-    setResults(res.data.articlesCount);
-    dispatch(fetchPosts({ offset: (page - 1) * 5 }));
-  }, [dispatch, page]);
 
   useEffect(() => {
+    const fetchArticleData = async () => {
+        const res = await axios.get(`articles?limit=5&offset=5`);
+        setResults(res.data.articlesCount);
+        dispatch(fetchPosts({ offset: (page - 1) * 5 }));
+    }
+    dispatch(setArticles([]));
     fetchArticleData();
-  }, [fetchArticleData]);
+  }, [page]);
 
   return (
     <>

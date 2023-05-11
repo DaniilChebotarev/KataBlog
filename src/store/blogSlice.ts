@@ -126,6 +126,9 @@ const blogSlice = createSlice({
     changePage(state, action) {
       state.page = action.payload;
     },
+    setArticles(state, action) {
+      state.articles = action.payload
+    }
   },
   extraReducers: {
     [fetchPosts.pending.type]: (state) => {
@@ -142,7 +145,7 @@ const blogSlice = createSlice({
       state.status = 'loading';
     },
     [fetchArticles.fulfilled.type]: (state, action) => {
-      state.articles = action.payload;
+      state.article = action.payload;
       state.status = 'loaded';
     },
     [fetchArticles.rejected.type]: (state) => {
@@ -151,5 +154,5 @@ const blogSlice = createSlice({
   },
 });
 
-export const { changePage } = blogSlice.actions;
+export const { changePage, setArticles } = blogSlice.actions;
 export default blogSlice.reducer;

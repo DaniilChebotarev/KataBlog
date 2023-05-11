@@ -43,6 +43,8 @@ const EditArticle = () => {
   useEffect(() => {
     async function fetchData() {
       const token = localStorage.getItem("token");
+      const data = localStorage.getItem('data');
+      const parse = JSON.parse(data as string);
       const slug = localStorage.getItem("slug");
       const response = await axios.get(`articles/${slug}`, {
         headers: {
@@ -54,18 +56,19 @@ const EditArticle = () => {
       setBodyInput(response?.data.article.body);
       setTagsInput(response?.data.article?.title);
       
-      if (response?.data.article.author.username !== localStorage.getItem('username')) {
+      if (response?.data.article.author.username !== parse?.user.username) {
         navigate('/')
       }
-    }
 
+      if (!isAuth && !token) {
+        navigate('/sign-in')
+      }
+    }
 
     fetchData();
   }, []);
 
-  if (!isAuth && !localStorage.getItem("token")) {
-    navigate('/sign-in')
-  }
+
 
   return (
     <div className={classes.article}>
@@ -113,7 +116,7 @@ const EditArticle = () => {
                   className={classes.article__inputTag}
                   defaultValue=""
                   placeholder="Tag"
-                  
+                  value={tagsInput}
                 />
                 <button onClick={() => remove(index)} className={classes.article__delete}>
                   Delete

@@ -19,15 +19,16 @@ const NewArticle = () => {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+
+    formState: { errors, isValid },
   } = useForm({
     defaultValues,
     mode: 'onBlur',
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<any>({
     control,
-    name: 'tagList' as never,
+    name: 'tagList',
     rules: {
       required: 'Please append at least 1 item',
     },
@@ -91,7 +92,7 @@ const NewArticle = () => {
                   Delete
                 </button>
                 {index === fields.length - 1 && (
-                  <button onClick={() => append({name: ''})} className={classes.article__add}>
+                  <button onClick={() => append({name: ''})} className={classes.article__add} disabled={!isValid}>
                     Add tag
                   </button>
                 )}
